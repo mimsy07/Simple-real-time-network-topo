@@ -10,6 +10,7 @@ Create a multi-branch network that optimize traffic, isolates broadcast domains,
 - VLANs and DTP (Dynamic Trunking Protocol) that segregates internal department traffic at layer 2 to enhance security and automatically establishes trunk links between switches.
 
 <h2>Skill Demonstrated</h2>
+
 - Configure GRE tunnel to connect two different networks
 - Implementing HSRP providing a backup default gateway for the local area network
 - Execute NAT rules allowing the certain private network to access internet
