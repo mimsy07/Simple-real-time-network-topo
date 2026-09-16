@@ -1,12 +1,26 @@
 # Simple-Small-Company-network
-# Main Objective
+<h2>Main Objective</h2>
 
 Create a multi-branch network that optimize traffic, isolates broadcast domains, and ensure uninterrupted WAN connectivity. Deployment utilizing VLANs and DTP for internal traffic control, while connecting offices seamlessly through implementation of OSPF and GRE Tunnel with a HSRP gateway redundancy. 
 
 - Create GRE tunnel Establishing virtual point-to-point tunnels through a public network to connect multi-branch company
 - Execute NAT (network address translation) to allow the company's private IP to access public IP address
 - Configure OSPF for fast-converging internal routing across core, distribution and remote layers
-- Implement HSRP to configure VIRTUAL IP per VLANs that would be shared by MAIN and BACKUP switches. This provides layer 3 gateway redundancy to eliminate single point of failure for local users.
+- Implement HSRP to configure VIRTUAL IP per VLANs that would be shared by MAIN and BACKUP switches. This provides  gateway redundancy to eliminate single point of failure for local users.
 - VLANs and DTP (Dynamic Trunking Protocol) that segregates internal department traffic at layer 2 to enhance security and automatically establishes trunk links between switches.
 
-<h3>Key Skill </h3>
+<h2>Skill Demonstrated</h2>
+- Configure GRE tunnel to connect two different networks
+- Implementing HSRP providing a backup default gateway for the local area network
+- Execute NAT rules allowing the certain private network to access internet
+- Configuration of DTP for the inter-switch connections.
+- Implementation of VLANs to logically separates the traffic of department to the layer 2 and core devices.
+- Configuring general routing configurations
+- Assigning IP address and default gateway for switches, routers, and end user devices.
+
+<h2>Project Walk through</h2>
+
+<p align="center">
+Network Diagram: <br/>
+<img src="" height="80%" width="80%"/>
+<br />
