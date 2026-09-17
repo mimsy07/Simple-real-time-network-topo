@@ -28,7 +28,10 @@ Network Diagram: <br/>
 
 <h3>Routing table</h3>
 
-<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/Routing%20table.png" height="80%" width="80%"/>
+<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/Routing%20table.png" height="60%" width="60%"/>
 
 <p>The HQ router's routing table shows the remote networks learned through OSPF and GRE Tunnel. The 10.1.1.0/24 network is a remote branch network learned dynamically through OSPF, with 172.16.1.2 as the next-hop IP address over Tunnel 0. The 172.16.1.0/30 network is directly connected to the GRE tunnel and is labeled with the "C" that means directly connected route. The HQ router also has a Static default route using serial 0/0/0 as the exit interface for destinations that's not found in the routing table.</p>
+
+<img src="" height="60%" width="60%"/>
+<p>Routing table of Internet router, you can see that there is no remote network in here except for the directly connected network</p>
 
