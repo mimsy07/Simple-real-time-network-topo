@@ -25,8 +25,11 @@ Create a multi-branch network that optimize traffic, isolates broadcast domains,
 Network Diagram: <br/>
 <img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/Topo.png" height="80%" width="80%"/>
 <br />
+  
+### VLANs and DTP (Dynamic Trunking Protocol)
 
-<h3>Routing table</h3>
+
+### Routing table
 
 <img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/Routing%20table.png" height="60%" width="60%"/>
 
@@ -34,4 +37,75 @@ Network Diagram: <br/>
 
 <img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/NET%20routing%20tab..png" height="60%" width="60%"/>
 <p>Routing table of Internet router, you can see that there is no remote network in here except for the directly connected network</p>
+<br />
+<h3>Configuration</h3>
+
+<b>HQ Router</b>
+
+````
+conf t
+router ospf 100
+network 10.10.10.1 0.0.0.0 area 0
+network 10.10.10.5 0.0.0.0 area 0
+network 172.16.1.0 0.0.0.255 area 0
+default-information originate
+exit
+````
+NOTE: I also implement default information originate to advertise a default route to all OSPF routers in this OSPF domain.
+
+<b>MAIN Switch</b>
+
+````
+conf t
+router ospf 100
+network 10.10.10.2 0.0.0.0 area 0
+network 192.168.10.0 0.0.0.255 area 0
+network 192.168.20.0 0.0.0.255 area 0
+network 192.168.30.0 0.0.0.255 area 0
+passive-interface default
+no passive-interface g1/3
+````
+Configure passive interface for those interface that I don't need to send hello message, except interface that is connected to another router g1/3, same with the configuration of backup L3SW
+
+<b>BACKUP Switch</b>
+
+````
+router ospf 100
+network 10.10.10.2 0.0.0.0 area 0
+network 192.168.10.0 0.0.0.255 area 0
+network 192.168.20.0 0.0.0.255 area 0
+network 192.168.30.0 0.0.0.255 area 0
+passive-interface default
+no passive-interface g1/3
+````
+<b>Branch Router</b>
+
+````
+conf t
+router ospf 100
+network 10.1.1.0 0.0.0.255 area 0
+network 172.16.1.0 0.0.0.255 area 0
+exit
+````
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
