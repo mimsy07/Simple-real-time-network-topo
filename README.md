@@ -28,6 +28,8 @@ Network Diagram: <br/>
   
 ### VLANs and DTP (Dynamic Trunking Protocol)
 
+<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/SW10-30%20VLAN.png" height="40%" width="50%"/>
+- Create VLANs to logically divide network, separating department traffic and prevent unnecessary traffic going to distribution and core devices  
 
 ### Routing table
 
