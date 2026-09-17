@@ -25,3 +25,10 @@ Create a multi-branch network that optimize traffic, isolates broadcast domains,
 Network Diagram: <br/>
 <img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/Topo.png" height="80%" width="80%"/>
 <br />
+
+<h3>Routing table</h3>
+
+<img src="" height="80%" width="80%"/>
+<br />
+
+
