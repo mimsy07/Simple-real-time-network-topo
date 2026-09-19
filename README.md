@@ -28,8 +28,108 @@ Network Diagram: <br/>
   
 ### VLANs and DTP (Dynamic Trunking Protocol)
 
-<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/SW10-30%20VLAN.png" height="40%" width="50%"/>
-- Create VLANs to logically divide network, separating department traffic and prevent unnecessary traffic going to distribution and core devices  
+<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/VLAN%20DTP.png" />
+<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/Main%20%26%20Backup.png" />
+- Create VLANs to logically divide network, separating department traffic and prevent unnecessary traffic going to distribution and core devices and configure DTP for inter-switch connectivity.
+
+<h3>Configuration</h3>
+
+````
+
+SW10
+conf t
+vlan 10
+name VLAN10
+exit
+!
+int r f0/2 - 3
+switchport mode access
+switchport access vlan 10
+exit
+!
+int r g0/1 - 2
+switchport mode trunk
+exit
+!
+!
+SW20
+conf t
+vlan 20
+name VLAN20
+exit
+!
+int r f0/2 - 3
+switchport mode access
+switchport access vlan 20
+exit
+!
+int r g0/1 - 2
+switchport mode trunk
+exit
+!
+!
+SW30
+conf t
+vlan 30
+name VLAN30
+exit
+!
+int r f0/2 - 3
+switchport mode access
+switchport access vlan 30
+exit
+!
+int r g0/1 - 2
+switchport mode trunk
+exit
+
+MAIN
+conf t
+int r g1/3 - 4
+switchport mode trunk
+no shut
+exit
+!
+int vlan 10
+ip add  192.168.10.1 255.255.255.0
+no shut
+exit
+!
+int vlan 20
+ip address 192.168.20.1 255.255.255.0
+no shut
+exit
+!
+int vlan 30
+ip address 192.168.30.1 255.255.255.0
+no shut
+exit
+!
+!
+BACKUP
+conf
+conf t
+int r g1/3 - 4
+switchport mode trunk
+no shut
+exit
+!
+int vlan 10
+ip add  192.168.10.2 255.255.255.0
+no shut
+exit
+!
+int vlan 20
+ip address 192.168.20.2 255.255.255.0
+no shut
+exit
+!
+int vlan 30
+ip address 192.168.30.2 255.255.255.0
+no shut
+exit
+
+````
 
 ### Routing table
 
