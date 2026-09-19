@@ -19,20 +19,18 @@ Create a multi-branch network that optimize traffic, isolates broadcast domains,
 - Configuring general routing configurations
 - Assigning IP address and default gateway for switches, routers, and end user devices.
 
-<h2>Project Walk through</h2>
-
-<p align="center">
-Network Diagram: <br/>
+## Project Walk through
+<h3>Network Diagram</h3> <br/>
 <img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/Topo.png" height="80%" width="80%"/>
 <br />
-  
-### VLANs and DTP (Dynamic Trunking Protocol)
+<h3>Network Overview</h3>
+<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/Overview/HQ.png" height="70%" width="70%"/>
+<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/Overview/ISP.png"/>
+<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/Overview/BRANCH.png"/>
 
-<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/VLAN%20DTP.png" />
-<img src="https://github.com/mimsy07/Simple-real-time-network-topo/blob/main/images/output/Main%20%26%20Backup.png" />
-- Create VLANs to logically divide network, separating department traffic and prevent unnecessary traffic going to distribution and core devices and configure DTP for inter-switch connectivity.
 
-<h3>Configuration</h3>
+## Configuration 
+<h3>SW10, SW20, and SW30</h3>
 
 ````
 
@@ -71,7 +69,7 @@ exit
 SW30
 conf t
 vlan 30
-name VLAN30
+name VLAN20
 exit
 !
 int r f0/2 - 3
@@ -82,51 +80,236 @@ exit
 int r g0/1 - 2
 switchport mode trunk
 exit
+````
 
-MAIN
+<h3>MAIN</h3>
+
+````
+
 conf t
-int r g1/3 - 4
+int r g1/4 - 6
 switchport mode trunk
 no shut
 exit
 !
+vlan 10
+name VLAN10
+exit
+!
+vlan 20
+name VLAN20
+exit
+!
+vlan 30
+name VLAN30
+exit
+!
 int vlan 10
-ip add  192.168.10.1 255.255.255.0
+ip address 192.168.10.1 255.255.255.0
+standby 10 ip 192.168.10.100 255.255.255.0
+standby 10 priority 120
+standby 10 preempt
+standby 10 timer 1  2
 no shut
 exit
 !
 int vlan 20
 ip address 192.168.20.1 255.255.255.0
+standby 10 ip 192.168.20.100 255.255.255.0
+standby 10 priority 120
+standby 10 preempt
+standby 10 timer 1  2
 no shut
 exit
 !
 int vlan 30
 ip address 192.168.30.1 255.255.255.0
+standby 10 ip 192.168.30.100 255.255.255.0
+standby 10 priority 120
+standby 10 preempt
+standby 10 timer 1  2
 no shut
 exit
 !
-!
-BACKUP
-conf
+ip routing
+int g1/3
+no switchport
+ip address 10.10.10.2 255.255.255.252
+no shut
+exit
+router ospf 100
+network 192.168.10.0 0.0.0.255 area 0
+network 192.168.20.0 0.0.0.255 area 0
+network 192.168.30.0 0.0.0.255 area 0
+network 10.10.10.2 0.0.0.0 area 0
+passive-interface default
+passive-interface g1/3
+
+````
+
+<h3>BACKUP</h3>
+
+````
+
 conf t
-int r g1/3 - 4
+int r g1/4 - 6
 switchport mode trunk
 no shut
 exit
 !
+vlan 10
+name VLAN10
+exit
+!
+vlan 20
+name VLAN20
+exit
+!
+vlan 30
+name VLAN30
+exit
+!
 int vlan 10
-ip add  192.168.10.2 255.255.255.0
+ip address 192.168.10.2 255.255.255.0
+standby 10 ip 192.168.10.100 255.255.255.0
+standby 10 timer 1  2
 no shut
 exit
 !
 int vlan 20
 ip address 192.168.20.2 255.255.255.0
+standby 10 ip 192.168.20.100 255.255.255.0
+standby 10 timer 1  2
 no shut
 exit
 !
 int vlan 30
 ip address 192.168.30.2 255.255.255.0
+standby 10 ip 192.168.30.100 255.255.255.0
+standby 10 timer 1  2
 no shut
+exit
+!
+ip routing
+int g1/3
+no switchport
+ip address 10.10.10.6 255.255.255.252
+no shut
+exit
+router ospf 100
+network 192.168.10.0 0.0.0.255 area 0
+network 192.168.20.0 0.0.0.255 area 0
+network 192.168.30.0 0.0.0.255 area 0
+network 10.10.10.6 0.0.0.0 area 0
+passive-interface default
+passive-interface g1/3
+
+````
+
+<h3>HQ</h3>
+
+````
+
+conf t
+int g0/0
+ip address 10.10.10.1 255.255.255.252
+no shut
+exit
+!
+int g0/1
+ip address 10.10.10.6 255.255.255.252
+no shut
+exit
+!
+int s0/0/0
+ip address 100.1.1.1 255.255.255.252
+no shut
+exit
+!
+router ospf 100
+network 10.10.10.1 0.0.0.0 area 0
+network 10.10.10.5 0.0.0.0 area 0
+default-information originate
+exit
+!
+ip router 0.0.0.0 0.0.0.0 s0/0/0
+!
+ip nat pool c-rule 100.1.1.1 100.1.1.1 netmask 255.255.255.252
+access-list 10 permit 192.168.0.0 0.0.255.255
+ip nat inside source list 10 pool c-rule overload
+!
+! CONFIGURING GRE TUNNEL
+!
+int tunnel 0
+ip mode gre
+ip address 172.16.1.1 255.255.255.252
+tunnel source s0/0/0
+tunnel destination 101.1.1.1
+no shut
+exit
+!
+router ospf 100
+network 172.16.1.0 0.0.0.3 area 0
+exit
+
+
+````
+
+<h3>INTERNET</h3>
+
+````
+conf t
+int s0/0/1
+ip address 100.1.1.2 255.255.255.252
+no shut
+exit
+!
+int s0/0/0
+ip address 101.1.1.2 255.255.255.252
+no shut
+exit
+int loopback 0
+ip address 8.8.8.8 255.255.255.0
+no shut
+exit
+````
+
+<h3>BACKUP</h3>
+
+````
+
+conf t
+int s0/0/1
+ip address 101.1.1.1 255.255.255.252
+no shut
+exit
+int g0/0
+ip address 10.1.1.1 255.255.255.0
+no shut
+exit
+!
+router ospf 100
+network 10.1.1.0 0.0.0.255 area 0
+exit
+!
+ip nat pool b-rule 101.1.1.1 101.1.1.1 netmask 255.255.255.252
+access-list 1 permit 10.1.1.0 0.0.0.255
+ip nat inside source list 1 pool b-rule overload
+exit
+!
+! CONFIGURING GRE TUNNEL
+!
+conf t
+int tunnel 0
+ip mode gre
+ip address 172.16.1.2 255.255.255.252
+tunnel source s0/0/1
+tunnel destination 100.1.1.1
+no shut
+exit
+!
+router ospf 100
+network 172.16.1.0 0.0.0.3 area 0
 exit
 
 ````
